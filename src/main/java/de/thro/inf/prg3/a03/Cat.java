@@ -140,6 +140,6 @@ public class Cat
     @Override
     public String toString()
     {
-        return name;
+        return this.name;
     }
 }

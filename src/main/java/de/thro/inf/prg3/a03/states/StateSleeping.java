@@ -25,7 +25,7 @@ public class StateSleeping extends State
     @Override
     public State successor(Cat cat)
     {
-        logger.info("Yoan... getting hungry!");
+        super.logger.info("Yoan... getting hungry!");
 
         return new StateHungry(cat.getAwake());
     }

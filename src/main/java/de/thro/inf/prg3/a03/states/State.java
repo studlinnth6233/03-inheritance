@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class State
 {
     // Instance of logger
-    protected static final Logger logger = LogManager.getLogger();
+    protected final Logger logger = LogManager.getLogger();
 
     protected int time = 0;
     protected final int duration;
@@ -44,8 +44,8 @@ public abstract class State
     {
         logger.info("tick()");
 
-        time ++;
+        this.time ++;
 
-        return time < duration ? this : successor(cat);
+        return this.time < this.duration ? this : this.successor(cat);
     }
 }

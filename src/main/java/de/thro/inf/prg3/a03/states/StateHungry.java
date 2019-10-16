@@ -25,7 +25,7 @@ public class StateHungry extends State
     @Override
     public State successor(Cat cat)
     {
-        logger.info("I've starved for a too long time...good bye...");
+        super.logger.info("I've starved for a too long time...good bye...");
 
         return new StateDeath(0);
     }
@@ -39,7 +39,7 @@ public class StateHungry extends State
      */
     public State feed(Cat cat)
     {
-        logger.info("You feed the cat...");
+        super.logger.info("You feed the cat...");
 
         return new StateDigesting(cat.getDigest());
     }

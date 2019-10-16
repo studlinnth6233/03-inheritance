@@ -25,7 +25,7 @@ public class StatePlayful extends State
     @Override
     public State successor(Cat cat)
     {
-        logger.info("Yoan... getting tired!");
+        super.logger.info("Yoan... getting tired!");
 
         return new StateSleeping(cat.getSleep());
     }
