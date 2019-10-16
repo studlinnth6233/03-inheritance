@@ -27,6 +27,6 @@ public class StateDigesting extends State
     {
         logger.info("Getting in a playful mood!");
 
-        return new StatePlayful(cat.getAwake());
+        return new StatePlayful(cat.getAwake() - super.duration);
     }
 }
