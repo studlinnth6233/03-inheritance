@@ -50,7 +50,7 @@ public class Cat
                     state = HUNGRY;
                     time = 0;
                 }
-                
+
                 break;
 
             case HUNGRY:
@@ -130,6 +130,21 @@ public class Cat
     public boolean isDead()
     {
         return state == State.DEAD;
+    }
+
+    public int getSleep()
+    {
+        return this.sleep;
+    }
+
+    public int getDigest()
+    {
+        return this.digest;
+    }
+
+    public int getAwake()
+    {
+        return this.awake;
     }
 
     @Override
