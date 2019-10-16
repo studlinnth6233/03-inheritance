@@ -37,11 +37,8 @@ public class StateHungry extends State
      *
      * @return The following state
      */
-    State feed(Cat cat)
+    public State feed(Cat cat)
     {
-        if (!cat.isHungry())
-            throw new IllegalStateException("Can't stuff a cat...");
-
         logger.info("You feed the cat...");
 
         return new StateDigesting(cat.getDigest());

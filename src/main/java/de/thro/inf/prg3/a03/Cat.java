@@ -1,95 +1,44 @@
 package de.thro.inf.prg3.a03;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import static de.thro.inf.prg3.a03.Cat.State.*;
+import de.thro.inf.prg3.a03.states.*;
 
 public class Cat
 {
-    private static final Logger logger = LogManager.getLogger();
+    private final String name;
 
-    // valid states
-    public enum State
-    {
-        SLEEPING, HUNGRY, DIGESTING, PLAYFUL, DEAD
-    }
-
-    // initially, animals are sleeping
-    private State state = State.SLEEPING;
-
-    // state durations (set via constructor), ie. the number of ticks in each state
     private final int sleep;
     private final int awake;
     private final int digest;
 
-    private final String name;
+    private State state;
 
-    private int time = 0;
-    private int timeDigesting = 0;
-
+    /**
+     * Constructor
+     * Set the attributes and initialize the starting state
+     *
+     * @param name   The name of the cat
+     * @param sleep  The sleeping time of the cat
+     * @param awake  The awake time of the cat
+     * @param digest The digesting time of the cat
+     */
     public Cat(String name, int sleep, int awake, int digest)
     {
         this.name = name;
-        this.sleep = sleep;
-        this.awake = awake;
+
+        this.sleep  = sleep;
+        this.awake  = awake;
         this.digest = digest;
+
+        this.state = new StateSleeping(this.sleep);
     }
 
+    /**
+     * Gets called every tick
+     * Calls the tick method on the current active state
+     */
     public void tick()
     {
-        logger.info("tick()");
-        time = time + 1;
-
-        switch (state)
-        {
-            case SLEEPING:
-                if (time == sleep)
-                {
-                    logger.info("Yoan... getting hungry!");
-                    state = HUNGRY;
-                    time = 0;
-                }
-
-                break;
-
-            case HUNGRY:
-                if (time == awake)
-                {
-                    logger.info("I've starved for a too long time...good bye...");
-                    state = DEAD;
-                }
-
-                break;
-
-            case DIGESTING:
-                timeDigesting = timeDigesting + 1;
-
-                if (timeDigesting == digest)
-                {
-                    logger.info("Getting in a playful mood!");
-                    state = PLAYFUL;
-                }
-
-                break;
-
-            case PLAYFUL:
-                if (time >= awake)
-                {
-                    logger.info("Yoan... getting tired!");
-                    state = SLEEPING;
-                    time = 0;
-                }
-                break;
-
-            case DEAD:
-                break;
-
-            default:
-                throw new IllegalStateException("Unknown cat state " + state.name());
-        }
-
-        logger.info(state.name());
+        this.state = this.state.tick(this);
     }
 
     /**
@@ -100,53 +49,94 @@ public class Cat
         if (!isHungry())
             throw new IllegalStateException("Can't stuff a cat...");
 
-        logger.info("You feed the cat...");
-
-        // change state and reset the timer
-        state = State.DIGESTING;
-        timeDigesting = 0;
+        this.state = ((StateHungry) this.state).feed(this);
     }
 
+    /**
+     * Check if the cat is currently asleep
+     *
+     * @return True / False whether cat is in sleeping state
+     */
     public boolean isAsleep()
     {
-        return state.equals(State.SLEEPING);
+        return this.state instanceof StateSleeping;
     }
 
+    /**
+     * Check if the cat is currently playful
+     *
+     * @return True / False whether cat is in playful state
+     */
     public boolean isPlayful()
     {
-        return state.equals(State.PLAYFUL);
+        return this.state instanceof StatePlayful;
     }
 
+    /**
+     * Check if the cat is currently hungry
+     *
+     * @return True / False whether cat is in hungry state
+     */
     public boolean isHungry()
     {
-        return state.equals(State.HUNGRY);
+        return this.state instanceof StateHungry;
     }
 
+    /**
+     * Check if the cat is currently digesting
+     *
+     * @return True / False whether cat is in digesting state
+     */
     public boolean isDigesting()
     {
-        return state.equals(State.DIGESTING);
+        return this.state instanceof StateDigesting;
     }
 
+    /**
+     * Check if the cat is dead
+     *
+     * @return True / False whether cat is in death state
+     */
     public boolean isDead()
     {
-        return state == State.DEAD;
+        return this.state instanceof StateDeath;
     }
 
+    /**
+     * Get the sleeping time of the cat
+     *
+     * @return The sleeping time of the cat
+     */
     public int getSleep()
     {
         return this.sleep;
     }
 
+    /**
+     * Get the digesting time of the cat
+     *
+     * @return The digesting time of the cat
+     */
     public int getDigest()
     {
         return this.digest;
     }
 
+    /**
+     * Get the awake time of the cat
+     *
+     * @return The awake time of the cat
+     */
     public int getAwake()
     {
         return this.awake;
     }
 
+    /**
+     * Translate the cat into a readable String ( name )
+     *
+     * @return Readable string representation of the cat
+     */
     @Override
     public String toString()
     {
